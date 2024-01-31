@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { mysqlDataSourceOptions } from './db/mysql-data-source';
 import { TodoModule } from './modules/todo/todo.module';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './modules/user/user.module';
     }),
     TodoModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

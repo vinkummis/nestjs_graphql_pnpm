@@ -1,22 +1,31 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { UserType } from './types/user.type';
-import { UserService } from './user.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from './entities/user.entity';
 import { UserInput } from './inputs/user.input';
+import { UserType } from './types/user.type';
+import { CurrentUser } from './user.decorator';
+import { UserService } from './user.service';
 
 @Resolver(() => UserType)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => [UserType])
-  async getUsers(): Promise<User[]> {
+  @UseGuards(JwtAuthGuard)
+  async getUsers(@CurrentUser() user: User): Promise<User[]> {
     try {
+      console.log(user)
       return this.userService.findAll();
     } catch (error) {}
   }
 
   @Query(() => UserType)
-  async getUser(@Args('id') id: number): Promise<User> {
+  @UseGuards(JwtAuthGuard)
+  async getUser(
+    @CurrentUser() user: any,
+    @Args('id') id: number,
+  ): Promise<User> {
     try {
       return this.userService.findOne(id);
     } catch (error) {}

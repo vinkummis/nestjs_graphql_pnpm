@@ -3,19 +3,16 @@ import { TodoType } from './types/todo.type';
 import { Todo } from './entities/todo.entity';
 import { TodoService } from './todo.service';
 import { TodoInput } from './inputs/todo.input';
-import { CustomResponse } from '../../helpers/custom-response.model';
 
 @Resolver(() => TodoType)
 export class TodoResolver {
   constructor(private readonly todoService: TodoService) {}
   @Query(() => [TodoType])
-  async getTodos(): Promise<CustomResponse<Todo[]>> {
+  async getTodos(): Promise<Todo[]> {
     try {
       const todos = await this.todoService.findAll();
-      return CustomResponse.of(todos, 200, 'Success');
-    } catch (error) {
-      return CustomResponse.of(null, 500, error.message);
-    }
+      return todos;
+    } catch (error) {}
   }
 
   @Query(() => TodoType)
