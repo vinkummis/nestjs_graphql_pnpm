@@ -1,4 +1,5 @@
 import { ObjectType, ID, Field } from '@nestjs/graphql';
+import { UserType } from '../../user/types/user.type';
 
 @ObjectType()
 export class TodoType {
@@ -13,4 +14,7 @@ export class TodoType {
 
   @Field()
   status: string;
+
+  @Field(() => UserType)
+  user: UserType;
 }

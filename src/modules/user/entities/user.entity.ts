@@ -3,9 +3,11 @@ import {
   BeforeInsert,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Todo } from '../../todo/entities/todo.entity';
 
 @Entity('users')
 export class User {
@@ -25,6 +27,9 @@ export class User {
   password: string;
 
   fullName: string;
+
+  @OneToMany(() => Todo, (task) => task.user)
+  todos: Todo[];
 
   @BeforeInsert()
   async hashPassword() {

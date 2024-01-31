@@ -11,3 +11,11 @@ export class UserInput {
   @Field()
   password: string;
 }
+
+@InputType()
+export class UpdateUserInput {
+  @Field({ nullable: true })
+  firstName: string;
+  @Field({ nullable: true })
+  lastName: string;
+}

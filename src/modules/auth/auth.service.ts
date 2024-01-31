@@ -48,6 +48,9 @@ export class AuthService {
 
   async verifyUserById(id: number): Promise<User> {
     const user = await this.userService.findOne(id);
+    if (!user) {
+      return;
+    }
     delete user.password;
     return user;
   }

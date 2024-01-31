@@ -1,14 +1,19 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TodoType } from './types/todo.type';
 import { Todo } from './entities/todo.entity';
 import { TodoService } from './todo.service';
-import { TodoInput } from './inputs/todo.input';
+import { TodoInput, UpdateTodoInput } from './inputs/todo.input';
+import { User } from '../user/entities/user.entity';
+import { CurrentUser } from '../user/user.decorator';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Resolver(() => TodoType)
 export class TodoResolver {
   constructor(private readonly todoService: TodoService) {}
   @Query(() => [TodoType])
-  async getTodos(): Promise<Todo[]> {
+  @UseGuards(JwtAuthGuard)
+  async getTodos(@CurrentUser() user: User): Promise<Todo[]> {
     try {
       const todos = await this.todoService.findAll();
       return todos;
@@ -16,33 +21,62 @@ export class TodoResolver {
   }
 
   @Query(() => TodoType)
-  async getTodo(@Args('id') id: number): Promise<Todo> {
+  @UseGuards(JwtAuthGuard)
+  async getTodo(
+    @CurrentUser() user: User,
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Todo> {
     try {
       return this.todoService.findOne(id);
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Query(() => TodoType)
+  async getTasksByUserId(@CurrentUser() user: User): Promise<Todo[]> {
+    return this.todoService.getTasksByUserId(user.id);
   }
 
   @Mutation(() => TodoType)
-  async createTodo(@Args('todo') todo: TodoInput): Promise<Todo> {
-    try {
-      return this.todoService.create(todo);
-    } catch (error) {}
-  }
-
-  @Mutation(() => TodoType)
-  async updateTodo(
-    @Args('id') id: number,
+  @UseGuards(JwtAuthGuard)
+  async createTodo(
+    @CurrentUser() user: User,
     @Args('todo') todo: TodoInput,
   ): Promise<Todo> {
     try {
-      return this.todoService.update(id, todo);
-    } catch (error) {}
+      todo.user = user;
+      console.log(user)
+      return this.todoService.create(todo);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Mutation(() => TodoType)
-  async deleteTodo(@Args('id') id: number): Promise<void> {
+  @UseGuards(JwtAuthGuard)
+  async updateTodo(
+    @CurrentUser() user: User,
+    @Args('id', { type: () => Int }) id: number,
+    @Args('todo') todo: UpdateTodoInput,
+  ): Promise<Todo> {
+    try {
+      return this.todoService.update(id, todo);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Mutation(() => TodoType)
+  @UseGuards(JwtAuthGuard)
+  async deleteTodo(
+    @CurrentUser() user: User,
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<void> {
     try {
       return this.todoService.remove(id);
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   }
 }

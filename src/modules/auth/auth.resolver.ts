@@ -18,7 +18,7 @@ export class AuthResolver {
 
       return user;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 
@@ -28,6 +28,10 @@ export class AuthResolver {
     @Args('email') email: string,
     @Args('password') password: string,
   ): Promise<{ access_token: string }> {
-    return this.authService.loginUser(email, password);
+    try {
+      return this.authService.loginUser(email, password);
+    } catch (error) {
+      throw error;
+    }
   }
 }
