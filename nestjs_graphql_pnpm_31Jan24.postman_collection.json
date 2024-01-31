@@ -1,0 +1,348 @@
+{
+	"info": {
+		"_postman_id": "5045af41-f02b-4237-bc2c-1656106caa20",
+		"name": "nestjs_graphql_pnpm_31Jan24",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32690237"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "registerUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation RegisterUser($userData: UserRegisterInput!) {\r\n  registerUser(userData: $userData) {\r\n    id\r\n      \r\n      email\r\n  }\r\n}",
+								"variables": "{\r\n  \"userData\": {\r\n      \"firstName\": \"vinod\",\r\n      \"lastName\": \"Mishra\",\r\n      \"email\": \"vinod@gmail.com\",\r\n      \"password\": \"1234\"\r\n    }\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "loginUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response JSON\r",
+									"var responseJson = pm.response.json();\r",
+									"    console.log(responseJson.data, pm.response.code)\r",
+									"if(pm.response.code == 200 && !responseJson.data?.errors?.length) {\r",
+									"    // Extract the access_token from the response\r",
+									"    var accessToken = responseJson.data.loginUser.access_token;\r",
+									"\r",
+									"    console.log(accessToken)\r",
+									"    // Update the collection authorization with the new access_token\r",
+									"    pm.collectionVariables.set('accessToken', accessToken);\r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation($email: String!, $password: String!) {\r\n     loginUser(email: $email, password: $password) {\r\n        access_token \r\n    } \r\n}",
+								"variables": "{\r\n    \"email\": \"vinod@gmail.com\",\r\n    \"password\": \"1234\"\r\n}"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "getUsers",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\r\n    getUsers {\r\n        id\r\n        firstName\r\n        lastName\r\n        email\r\n    }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation createUser($input: UserInput!) {\r\n  createUser(user: $input) {\r\n    id\r\n    firstName\r\n    lastName\r\n    email\r\n  }\r\n}\r\n",
+								"variables": "{\r\n  \"input\": {\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"email\": \"john.doe@example.com\",\r\n    \"password\": \"password123\"\r\n  }\r\n}\r\n"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query($id: Int!) {\r\ngetUser(id: $id) {\r\n    id\r\n    firstName\r\n    lastName\r\n    email\r\n    fullName\r\n    todos {\r\n      id\r\n      title\r\n    }\r\n} \r\n}\r\n",
+								"variables": "{\r\n  \"id\": 1\r\n}\r\n"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation updateUser($id: Int!, $input: UpdateUserInput!) {\r\n  updateUser(id: $id, user: $input) {\r\n    id\r\n    firstName\r\n    lastName\r\n    email\r\n  }\r\n}\r\n",
+								"variables": "{\r\n  \"id\": 1,\r\n  \"input\": {\r\n    \"firstName\": \"UpdatedJohn\"\r\n  }\r\n}\r\n"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation deleteUser($id:  Int!) {\r\n  deleteUser(id: $id) {\r\n    id\r\n  }\r\n}\r\n",
+								"variables": "{\r\n  \"id\": 1\r\n}\r\n"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "todo",
+			"item": [
+				{
+					"name": "getTodos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\r\n    getTodos {\r\n         title\r\n        description\r\n        status\r\n        user {\r\n            id\r\n            firstName\r\n            lastName\r\n            email\r\n        }\r\n    }\r\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createTodo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation createTodo($input: TodoInput!) {\r\n  createTodo(todo: $input) {\r\n    id\r\n    title\r\n    description\r\n    status\r\n    user {\r\n      id\r\n      firstName\r\n      lastName\r\n      email\r\n    }\r\n  }\r\n}\r\n",
+								"variables": "{\r\n  \"input\": {\r\n    \"title\": \"Task 1\",\r\n    \"description\": \"Description of Task 1\",\r\n    \"status\": \"not-started\"\r\n  }\r\n}\r\n"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTodoById",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query($id: Int!) {\r\n    getTodo(id: $id) {\r\n  id\r\n    title\r\n    description\r\n    status\r\n    user {\r\n      id\r\n      firstName\r\n      lastName\r\n      email\r\n    }\r\n}\r\n}\r\n",
+								"variables": "{\r\n  \"id\": 2\r\n}\r\n"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateTodo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation updateTodo($id: Int!, $input: UpdateTodoInput!) {\r\n  updateTodo(id: $id, todo: $input) {\r\n    id\r\n    title\r\n    description\r\n    status\r\n    user {\r\n      id\r\n      firstName\r\n      lastName\r\n      email\r\n    }\r\n  }\r\n}\r\n",
+								"variables": "{\r\n  \"id\": 2,\r\n  \"input\": {\r\n    \"status\": \"completed\"\r\n  }\r\n}\r\n"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteTodo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation deleteTodo($id: Int!) {\r\n  deleteTodo(id: $id) {\r\n    id\r\n    title\r\n    description\r\n    status\r\n    user {\r\n      id\r\n      firstName\r\n      lastName\r\n      email\r\n    }\r\n  }\r\n}\r\n",
+								"variables": "{\r\n  \"id\": 1\r\n}\r\n"
+							}
+						},
+						"url": {
+							"raw": "{{graphqlUrl}}",
+							"host": [
+								"{{graphqlUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "graphqlUrl",
+			"value": "http://localhost:3000/graphql",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
