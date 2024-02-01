@@ -31,8 +31,8 @@ This repository contains a NestJS GraphQL project with three modules: `auth`, `u
    DB_TYPE=mysql
    DB_HOST=localhost
    DB_PORT=3306
-   DB_USERNAME=root
-   DB_PASSWORD=password
+   DB_USERNAME=******
+   DB_PASSWORD=******
    DB_DATABASE=nestjs_graphql
    ```
 
@@ -48,9 +48,9 @@ This repository contains a NestJS GraphQL project with three modules: `auth`, `u
 
 ## Postman Collection
 
-Use the provided Postman collection to test the API endpoints. Import the collection using the following link:
+Use the provided Postman collection to test the API endpoints.
 
-[Postman Collection](your-postman-collection-link)
+Note: Postman collection zip file is in root directory of project.
 
 ## Project Structure
 
